@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axiosClient from "../api/axiosClient";
-import "../Booking.css";
+import "../booking.css";
 
 const HotelDetailPage = () => {
   const { id } = useParams();
