@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import axiosClient from "../api/axiosClient";
 import "../hotel.css";
-
+import { useNavigate } from "react-router-dom";
 const MainPage = () => {
   const [hotels, setHotels] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("name");
-
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchHotels = async () => {
       try {
@@ -96,31 +96,34 @@ const MainPage = () => {
         </div>
       ) : (
         filteredAndSortedHotels.map((hotel) => (
-          <div key={hotel.id} className="hotel-card">
+          <div
+            key={hotel.id}
+            className="hotel-card"
+            onClick={() => navigate(`/hotel/${hotel.id}`)}
+          >
             <div className="card-image">
               <img
-                src={hotel.images?.[0]?.path || "https://via.placeholder.com/400x250"}
+                src={
+                  hotel.images?.[0]?.path ||
+                  "https://via.placeholder.com/400x250"
+                }
                 alt={hotel.name}
               />
               <div className="favorite-icon">♡</div>
             </div>
+
             <div className="card-content">
               <h3 className="card-title">{hotel.name}</h3>
               <p className="card-location">📍 {hotel.city?.name}</p>
-              <div className="card-rating">
-                ⭐ {hotel.average_rating || 4.8}
-              </div>
+              <div className="card-rating">⭐ {hotel.average_rating || 4.8}</div>
               <div className="card-price">
                 <span className="old-price">$87</span>
                 <span className="new-price">
-                  ${Math.min(...hotel.rooms.map(r => r.price)) || 50}
+                  ${Math.min(...hotel.rooms.map((r) => r.price)) || 50}
                 </span>
                 <span className="per-night">/night</span>
               </div>
             </div>
-             <a href={`/hotel/${hotel.id}`} className="view-details">
-        View Details & Book
-      </a>
           </div>
         ))
       )}
