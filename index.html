@@ -2,6 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#2b2b2b" />
+   <link rel="apple-touch-icon" href="https://mpjourney.s3.amazonaws.com/uploads/UBhHLBQIyb7VM7w9KCAgxgavuEpu09SfObZozGtw.png"/>
+
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <script
@@ -16,6 +20,17 @@
       crossorigin="anonymous"
     />
     <title>book-app</title>
+    <script>
+      if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker
+      .register("/sw.js")
+      .then(() => console.log("Service Worker registered"))
+      .catch((err) => console.log("SW registration failed:", err));
+  });
+}
+
+    </script>
   </head>
   <body>
     <div id="root"></div>
