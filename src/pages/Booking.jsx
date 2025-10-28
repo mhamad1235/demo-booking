@@ -41,7 +41,7 @@ useEffect(() => {
               <img
                 src={
                   booking.hotel.images[0]?.url ||
-                  "https://via.placeholder.com/150x100?text=Hotel"
+                  "https://mpjourney.s3.amazonaws.com/uploads/UBhHLBQIyb7VM7w9KCAgxgavuEpu09SfObZozGtw.png"
                 }
                 alt={booking.hotel.name}
               />

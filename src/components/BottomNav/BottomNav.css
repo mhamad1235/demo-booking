@@ -1,0 +1,50 @@
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-top: 1px solid #ddd;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 10px 0;
+  z-index: 100;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: #444;
+  font-size: 13px;
+  transition: all 0.2s ease;
+}
+
+.nav-item svg {
+  font-size: 22px;
+  margin-bottom: 3px;
+}
+
+.nav-item.active,
+.nav-item:hover {
+  color: #007bff;
+}
+
+.center-btn {
+  background-color: #007bff;
+  color: #fff;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  margin-top: -35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0, 123, 255, 0.4);
+}
+
+.plus-icon {
+  font-size: 28px;
+}

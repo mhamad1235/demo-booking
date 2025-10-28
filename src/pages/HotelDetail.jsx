@@ -124,7 +124,7 @@ return (
         src={hotel.images?.[activeImage]?.path || "/placeholder.jpg"}
         alt={hotel.name}
       />
-      <button className="back-btn">←</button>
+      
       <div className="image-counter">
         {activeImage + 1} / {hotel.images?.length || 1}
       </div>
