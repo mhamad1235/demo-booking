@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axiosClient from "../api/axiosClient";
+import { useNavigate } from "react-router-dom";
 import "../booking.css";
 
 const HotelDetailPage = () => {
@@ -19,7 +20,7 @@ const HotelDetailPage = () => {
   const [roomError, setRoomError] = useState("");
   const [selectedRoomType, setSelectedRoomType] = useState("King Bed");
   const [activeImage, setActiveImage] = useState(0);
-
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchHotel = async () => {
       try {
@@ -93,6 +94,8 @@ const HotelDetailPage = () => {
         const personalAppLink = response.data.message.personalAppLink;
         if (personalAppLink) {
           window.open(personalAppLink, "_blank");
+            navigate("/booking");
+
           alert("Payment initiated. Please complete the transaction in the new window.");
         } else {
           alert("Payment process initiated, but no link was returned.");
@@ -113,144 +116,126 @@ const HotelDetailPage = () => {
   const amenities = ["Free Wi-Fi", "Parking", "Pool", "Fitness Center"];
   const roomTypes = ["King Bed", "Queen Bed", "Sofa Bed", "Double"];
 
-  return (
-    <div className="hotel-detail-container">
-      {/* Hotel Header */}
-      <div className="hotel-header">
-        <h1 className="hotel-title">{hotel.name}</h1>
-        <div className="hotel-meta">
-          <div className="rating">
-            <span className="stars">⭐</span>
-            <span className="rating-value">4.5</span>
-            <span className="rating-count">(127)</span>
-          </div>
-          <div className="location">
-            <span className="location-icon">📍</span>
-            {hotel.city?.name || "Sulaymaniyah"}
-          </div>
-          <div className="open-hours">Open 24/7</div>
-        </div>
-      </div>
-
-      {/* Image Gallery */}
-      {hotel.images?.length > 0 && (
-        <div className="image-gallery">
-          <div className="main-image">
-            <img src={hotel.images[activeImage].path} alt={`${hotel.name} ${activeImage + 1}`} />
-          </div>
-          {hotel.images.length > 1 && (
-            <div className="image-thumbnails">
-              {hotel.images.map((img, index) => (
-                <img
-                  key={index}
-                  src={img.path}
-                  alt={`Thumbnail ${index + 1}`}
-                  className={activeImage === index ? "active" : ""}
-                  onClick={() => setActiveImage(index)}
-                />
-              ))}
-            </div>
-          )}
-        </div>
-      )}
-
-      <div className="hotel-content">
-        <div className="main-content">
-          {/* Amenities Section */}
-          <div className="section">
-            <h3 className="section-title">Amenities</h3>
-            <div className="amenities-grid">
-              {amenities.map((amenity, index) => (
-                <div key={index} className="amenity-item">
-                  {amenity}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* About Section */}
-          <div className="section">
-            <h3 className="section-title">About</h3>
-            <p className="about-text">
-              {hotel.description || "Nestled in the serene hills, this hotel offers a tranquil experience, perfect for family vacations or romantic getaways."}
-            </p>
-          </div>
-
-          {/* Booking Section */}
-          <div className="section">
-            <h3 className="section-title">How long do you want to stay?</h3>
-            
-            {/* Date Selection */}
-            <div className="date-selection">
-              <div className="date-input-group">
-                <div className="date-input">
-                  <label>Check-in</label>
-                  <input
-                    type="date"
-                    name="check_in"
-                    value={form.check_in}
-                    onChange={handleChange}
-                    min={new Date().toISOString().split('T')[0]}
-                  />
-                </div>
-                <div className="date-input">
-                  <label>Check-out</label>
-                  <input
-                    type="date"
-                    name="check_out"
-                    value={form.check_out}
-                    onChange={handleChange}
-                    min={form.check_in || new Date().toISOString().split('T')[0]}
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Room Type Selection */}
-            <div className="room-type-selection">
-              <h4 className="room-type-title">Room Type</h4>
-              <div className="room-type-buttons">
-                {roomTypes.map((type) => (
-                  <button
-                    key={type}
-                    className={`room-type-btn ${selectedRoomType === type ? 'active' : ''}`}
-                    onClick={() => handleRoomTypeSelect(type)}
-                  >
-                    {type}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Available Rooms */}
-            <div className="available-rooms-section">
-              <h4 className="rooms-title">Available Rooms</h4>
-              
-              {fetchingRooms ? (
-                <div className="loading-text">Checking availability...</div>
-              ) : roomError ? (
-                <div className="error-text">{roomError}</div>
-              ) : availableRooms.length > 0 ? (
-                <div className="rooms-list">
-                  {availableRooms.map((room) => (
-                    <RoomCard
-                      key={room.id}
-                      room={room}
-                      onBook={handlePayment}
-                    />
-                  ))}
-                </div>
-              ) : (
-                <div className="info-text">
-                  Please select dates to see available rooms
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
+return (
+  <div className="hotel-detail-page">
+    {/* Hero Image */}
+    <div className="hero-image">
+      <img
+        src={hotel.images?.[activeImage]?.path || "/placeholder.jpg"}
+        alt={hotel.name}
+      />
+      <button className="back-btn">←</button>
+      <div className="image-counter">
+        {activeImage + 1} / {hotel.images?.length || 1}
       </div>
     </div>
-  );
+
+    {/* Hotel Info */}
+    <div className="hotel-info">
+      <h2 className="hotel-name">{hotel.name}</h2>
+      <div className="hotel-meta">
+        <span className="rating">⭐ 4.5 <small>(127)</small></span>
+        <span className="dot">•</span>
+        <span className="location">📍 {hotel.city?.name || "Sulaymaniyah"}</span>
+        <span className="dot">•</span>
+        <span className="open">Open 24/7</span>
+      </div>
+
+      {/* Amenities */}
+      <h3 className="section-title">Amenities</h3>
+      <div className="amenities">
+        {["Free Wi-Fi", "Parking", "Pool", "Fitness Center"].map((a, i) => (
+          <div key={i} className="amenity">{a}</div>
+        ))}
+      </div>
+
+      {/* About */}
+      <h3 className="section-title">About</h3>
+      <p className="about-text">
+        {hotel.description ||
+          "Nestled in the serene hills, Serene Valley Villa offers a tranquil mountain view experience, perfect for family vacations or romantic getaways."}
+      </p>
+
+      {/* Date Selection */}
+      <h3 className="section-title">How long do you want to stay?</h3>
+      <div className="date-box">
+        <span className="calendar-icon"></span>
+        <input
+          type="date"
+          name="check_in"
+          value={form.check_in}
+          onChange={handleChange}
+        />
+        <span> - </span>
+        <input
+          type="date"
+          name="check_out"
+          value={form.check_out}
+          onChange={handleChange}
+        />
+      </div>
+
+      {/* Room Types */}
+      <div className="room-types">
+        {["King Bed", "Queen Bed", "Sofa Bed", "Double"].map((type) => (
+          <button
+            key={type}
+            className={`room-type ${selectedRoomType === type ? "active" : ""}`}
+            onClick={() => handleRoomTypeSelect(type)}
+          >
+            {type}
+          </button>
+        ))}
+      </div>
+
+      {/* Available Rooms */}
+      <div className="room-list">
+        {fetchingRooms ? (
+          <div className="loading-text">Checking availability...</div>
+        ) : roomError ? (
+          <div className="error-text">{roomError}</div>
+        ) : availableRooms.length > 0 ? (
+          availableRooms.map((room) => (
+            <div key={room.id} className="room-card">
+          
+              <div className="room-content">
+                <div className="room-desc">
+                  <p className="room-title">
+                    {room.guest || 2} Guests • 1 Bedroom • {room.beds || 2} Beds • {room.bath || 1} Bath
+                  </p>
+                  <p className="room-sub">
+                    {room.name.includes("Breakfast")
+                      ? "2 King Beds, Breakfast"
+                      : "2 King Beds"}
+                  </p>
+                  {room.name.includes("Breakfast") && (
+                    <p className="room-note">
+                      Free cancellation 48 hours before check-in date
+                    </p>
+                  )}
+                </div>
+                <div className="room-action">
+                  <div className="room-price">
+                    ${room.price || 99}
+                    <span>/night</span>
+                  </div>
+                  <button className="book-btn" onClick={() => handlePayment(room)}>
+                    Book
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="info-text">
+            Please select dates to see available rooms
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+);
+
 };
 
 const RoomCard = ({ room, onBook }) => {

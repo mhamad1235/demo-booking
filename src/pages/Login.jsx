@@ -23,7 +23,7 @@ const Login = () => {
 
       if (response.data.result) {
         const { access_token, user } = response.data.data;
-          localStorage.setItem("access_token", access_token);
+        localStorage.setItem("access_token", access_token);
         localStorage.setItem("user", JSON.stringify(user));
         navigate("/main");
       } else {
