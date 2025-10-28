@@ -37,7 +37,7 @@ const Login = () => {
       <div className="card shadow-lg border-0 p-4 w-100" style={{ maxWidth: "420px" }}>
         <div className="text-center mb-4">
           <div className="d-flex align-items-center justify-content-center gap-2 mb-2">
-            <span className="fs-2">🏨</span>
+            <span className="fs-2"></span>
             <h1 className="m-0 fw-bold text-dark">LuxStay</h1>
           </div>
           <h5 className="fw-semibold text-dark">Welcome Back</h5>
