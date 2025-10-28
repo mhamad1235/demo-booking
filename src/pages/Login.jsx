@@ -20,8 +20,8 @@ const Login = () => {
       const response = await axiosClient.post("/auth/login", { phone, password });
 
       if (response.data.result) {
-        const { access_token, user } = response.data.data;
-        login(user, access_token);
+        const { access_token, user,refresh_token } = response.data.data;
+        login(user, access_token,refresh_token);
       } else {
         setError("Invalid credentials");
       }

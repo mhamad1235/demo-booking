@@ -50,28 +50,69 @@ const HotelDetailPage = () => {
     return () => clearTimeout(timer);
   }, [form.check_in, form.check_out, form.guests, form.rooms]);
 
-  const fetchAvailableRooms = async () => {
-    setFetchingRooms(true);
-    setRoomError("");
-    try {
-      const token = localStorage.getItem("access_token");
-      const response = await axiosClient.post(`/book/hotel/${id}`, form, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+const fetchAvailableRooms = async () => {
+  setFetchingRooms(true);
+  setRoomError("");
 
-      if (response.data.result) {
-        setAvailableRooms(response.data.data.rooms);
-      } else {
-        setAvailableRooms([]);
-        setRoomError("No rooms available for selected dates.");
-      }
-    } catch (err) {
+  try {
+    const token = localStorage.getItem("access_token");
+    const refresh_token = localStorage.getItem("refresh_token");
+
+    const response = await axiosClient.post(`/book/hotel/${id}`, form, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (response.data.result) {
+      setAvailableRooms(response.data.data.rooms);
+    } else {
       setAvailableRooms([]);
-      setRoomError("Error fetching room availability.");
-    } finally {
-      setFetchingRooms(false);
+      setRoomError("No rooms available for selected dates.");
     }
-  };
+
+  } catch (err) {
+    if (err.response && err.response.status === 401) {
+      try {
+        // 👇 Proper refresh call
+        const refreshResponse = await axiosClient.post(
+          "/refresh-token",
+          {}, // empty body
+          {
+            headers: { Authorization: `Bearer ${localStorage.getItem("refresh_token")}` },
+          }
+        );
+
+        if (refreshResponse.data.result && refreshResponse.data.data?.access_token) {
+          // save new tokens
+          localStorage.setItem("access_token", refreshResponse.data.data.access_token);
+          localStorage.setItem("refresh_token", refreshResponse.data.data.refresh_token);
+
+          // retry the original request
+          const retryResponse = await axiosClient.post(`/book/hotel/${id}`, form, {
+            headers: { Authorization: `Bearer ${refreshResponse.data.data.access_token}` },
+          });
+
+          if (retryResponse.data.result) {
+            setAvailableRooms(retryResponse.data.data.rooms);
+          } else {
+            setAvailableRooms([]);
+            setRoomError("No rooms available for selected dates.");
+          }
+          return;
+        } else {
+          navigate("/");
+        }
+      } catch (refreshErr) {
+        console.error("Refresh token failed:", refreshErr);
+        navigate("/");
+      }
+    }
+
+    setAvailableRooms([]);
+    setRoomError("Error fetching room availability.");
+  } finally {
+    setFetchingRooms(false);
+  }
+};
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });

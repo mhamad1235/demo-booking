@@ -19,9 +19,10 @@ export const AuthProvider = ({ children }) => {
   }, [token]);
 
   // ✅ Login function
-  const login = (userData, accessToken) => {
+  const login = (userData, accessToken,refreshToken) => {
     localStorage.setItem("user", JSON.stringify(userData));
     localStorage.setItem("access_token", accessToken);
+    localStorage.setItem("refresh_token", refreshToken);
     setUser(userData);
     setToken(accessToken);
     navigate("/main");
