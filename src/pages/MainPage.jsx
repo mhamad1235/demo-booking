@@ -56,62 +56,78 @@ const MainPage = () => {
   if (loading) return <div className="loading-spinner">Loading hotels...</div>;
   if (error) return <div className="error-message">{error}</div>;
 
-  return (
-    <div className="main-container">
-      <header className="main-header">
-        <div className="header-content">
-          <div className="brand">
-            <span className="brand-icon">🏨</span>
-            <h1>LuxStay Hotels</h1>
-          </div>
-          <button onClick={handleLogout} className="btn btn-outline">
-            Logout
-          </button>
-        </div>
-      </header>
-
-      <div className="content-wrapper">
-        <div className="filters-section">
-          <div className="search-box">
-            <input
-              type="text"
-              placeholder="Search hotels or cities..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="search-input"
-            />
-            <span className="search-icon">🔍</span>
-          </div>
-          
-          <div className="sort-filter">
-            <label>Sort by:</label>
-            <select 
-              value={sortBy} 
-              onChange={(e) => setSortBy(e.target.value)}
-              className="sort-select"
-            >
-              <option value="name">Name</option>
-              <option value="rating">Rating</option>
-              <option value="price">Price</option>
-            </select>
-          </div>
-        </div>
-
-        {filteredAndSortedHotels.length === 0 ? (
-          <div className="empty-state">
-            <h3>No hotels found</h3>
-            <p>Try adjusting your search criteria</p>
-          </div>
-        ) : (
-          <div className="hotels-grid">
-            {filteredAndSortedHotels.map((hotel) => (
-              <HotelCard key={hotel.id} hotel={hotel} />
-            ))}
-          </div>
-        )}
+ return (
+  <div className="destination-container">
+    <header className="destination-header">
+      <div className="header-title">
+        <span className="back-arrow">←</span>
+        <h2>All Destinations</h2>
       </div>
-    </div>
-  );
+      <div className="search-wrapper">
+        <span className="search-icon">🔍</span>
+        <input
+          type="text"
+          className="search-input"
+          placeholder="Search zones, food, stays, or attractions..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
+
+      <div className="filter-buttons">
+        <button className="filter-btn active">All</button>
+        <button className="filter-btn">Restaurants</button>
+        <button className="filter-btn">Cabin</button>
+        <button className="filter-btn">Lake</button>
+      </div>
+
+      <div className="filter-tags">
+        <span className="tag">Availability ✕</span>
+        <span className="tag">Nearby ✕</span>
+        <button className="dropdown-btn">Filters ▼</button>
+        <button className="dropdown-btn">Price ▼</button>
+      </div>
+    </header>
+
+    <main className="cards-container">
+      {filteredAndSortedHotels.length === 0 ? (
+        <div className="empty-state">
+          <h3>No hotels found</h3>
+        </div>
+      ) : (
+        filteredAndSortedHotels.map((hotel) => (
+          <div key={hotel.id} className="hotel-card">
+            <div className="card-image">
+              <img
+                src={hotel.images?.[0]?.path || "https://via.placeholder.com/400x250"}
+                alt={hotel.name}
+              />
+              <div className="favorite-icon">♡</div>
+            </div>
+            <div className="card-content">
+              <h3 className="card-title">{hotel.name}</h3>
+              <p className="card-location">📍 {hotel.city?.name}</p>
+              <div className="card-rating">
+                ⭐ {hotel.average_rating || 4.8}
+              </div>
+              <div className="card-price">
+                <span className="old-price">$87</span>
+                <span className="new-price">
+                  ${Math.min(...hotel.rooms.map(r => r.price)) || 50}
+                </span>
+                <span className="per-night">/night</span>
+              </div>
+            </div>
+             <a href={`/hotel/${hotel.id}`} className="view-details">
+        View Details & Book
+      </a>
+          </div>
+        ))
+      )}
+    </main>
+  </div>
+);
+
 };
 
 const HotelCard = ({ hotel }) => (
@@ -154,9 +170,7 @@ const HotelCard = ({ hotel }) => (
         </div>
       )}
       
-      <a href={`/hotel/${hotel.id}`} className="view-details">
-        View Details & Book
-      </a>
+     
     </div>
   </div>
 );
