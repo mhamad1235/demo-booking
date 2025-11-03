@@ -334,3 +334,85 @@
 .status-btn.completed {
   background: #4caf50;
 }
+.guest-table-container {
+  margin-top: 1rem;
+}
+
+.guest-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 1rem;
+}
+
+.guest-count-input {
+  width: 80px;
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.guest-upload-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+}
+
+.guest-upload-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #fafafa;
+  padding: 10px;
+  border-radius: 12px;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+}
+
+.guest-label {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #444;
+}
+
+.upload-box {
+  width: 100%;
+  aspect-ratio: 1/1;
+  border: 2px dashed #ccc;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.upload-box:hover {
+  border-color: #007bff;
+  background: #f8faff;
+}
+
+.upload-placeholder {
+  color: #888;
+  font-size: 12px;
+}
+
+.guest-preview-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+/* ✅ Responsive for mobile */
+@media (max-width: 600px) {
+  .guest-upload-grid {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  }
+  .guest-label {
+    font-size: 12px;
+  }
+}
