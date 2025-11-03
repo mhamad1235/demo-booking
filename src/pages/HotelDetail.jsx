@@ -124,7 +124,7 @@ const HotelDetailPage = () => {
         if (personalAppLink) {
           window.open(personalAppLink, "_blank");
           navigate("/booking");
-          alert("Payment initiated. Please complete the transaction in the new window.");
+         
         } else {
           alert("Payment process initiated, but no link was returned.");
         }
