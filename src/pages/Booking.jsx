@@ -1,36 +1,33 @@
 import React, { useEffect, useState } from "react";
 import "../booking.css";
 import axiosClient from "../api/axiosClient";
+import { QRCodeCanvas } from "qrcode.react"; // ✅ Import QR code component
+
 function BookingsList() {
   const [bookings, setBookings] = useState([]);
   const [error, setError] = useState("");
-useEffect(() => {
-  const fetchBookings = async () => {
-    try {
-      const token = localStorage.getItem("access_token");
 
-      const response = await axiosClient.get("/bookings", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+  useEffect(() => {
+    const fetchBookings = async () => {
+      try {
+        const token = localStorage.getItem("access_token");
+        const response = await axiosClient.get("/bookings", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
-      console.log("Bookings API:", response.data); // 👈 Check in console
-
-      // ✅ Fix: remove `response.data.result` condition
-      if (response.data.bookings?.data) {
-        setBookings(response.data.bookings.data);
-      } else {
-        setError("Failed to load bookings.");
+        if (response.data.bookings?.data) {
+          setBookings(response.data.bookings.data);
+        } else {
+          setError("Failed to load bookings.");
+        }
+      } catch (err) {
+        console.error("Error fetching bookings:", err);
+        setError("Error loading bookings.");
       }
-    } catch (err) {
-      console.error("Error fetching bookings:", err);
-      setError("Error loading bookings.");
-    }
-  };
+    };
 
-  fetchBookings();
-}, []);
-
-
+    fetchBookings();
+  }, []);
 
   return (
     <div className="bookings-container">
@@ -47,14 +44,13 @@ useEffect(() => {
               />
               <span
                 className={`status-tag ${
-                  booking.payment_status === "paid"
-                    ? "completed"
-                    : "pending"
+                  booking.payment_status === "paid" ? "completed" : "pending"
                 }`}
               >
                 {booking.payment_status}
               </span>
             </div>
+
             <div className="hotel-info">
               <h3>{booking.hotel.name}</h3>
               <p className="hotel-location">
@@ -96,13 +92,24 @@ useEffect(() => {
             </div>
           </div>
 
+          {/* ✅ QR Code Section */}
+          <div className="qr-section">
+            <h4>Booking QR Code</h4>
+            <QRCodeCanvas
+              value={String(booking.id)} // Use booking ID or any encoded URL
+              size={100} // Adjust size
+              bgColor="#ffffff"
+              fgColor="#000000"
+              level="H" // High error correction
+              includeMargin={true}
+            />
+          </div>
+
           <div className="booking-footer">
             <button className="see-detail">See detail</button>
             <button
               className={`status-btn ${
-                booking.payment_status === "paid"
-                  ? "completed"
-                  : "upcoming"
+                booking.payment_status === "paid" ? "completed" : "upcoming"
               }`}
             >
               {booking.payment_status === "paid" ? "Completed" : "Upcoming"}
@@ -113,4 +120,5 @@ useEffect(() => {
     </div>
   );
 }
+
 export default BookingsList;
